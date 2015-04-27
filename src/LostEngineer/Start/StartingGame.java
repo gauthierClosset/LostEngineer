@@ -130,6 +130,7 @@ public class StartingGame extends Applet implements Runnable, KeyListener {
 		}
 		
 		g.drawImage(spaceshipImg, spaceship.getCenterX() - spaceshipImgWidth/2, spaceship.getCenterY() - spaceshipImgHeight/2, this);
+		
 		g.drawImage(isipShipImg, isipship.getCenterX(), isipship.getCenterY(), this);
 	}
 	
@@ -178,7 +179,6 @@ public class StartingGame extends Applet implements Runnable, KeyListener {
             break;
 
         case KeyEvent.VK_SPACE:
-            System.out.println("Stop shooting");
             break;
 
         }
