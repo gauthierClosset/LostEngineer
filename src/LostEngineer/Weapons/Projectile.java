@@ -1,17 +1,24 @@
 package LostEngineer.Weapons;
 
+import java.awt.Rectangle;
+
+import LostEngineer.Start.StartingGame;
+
 
 
 public class Projectile {
 	
 	private int x, y, speedX;
 	private boolean visible;
+	private Rectangle r;
 	
 	public Projectile(int startX, int startY) {
 		x = startX;
 		y = startY;
-		speedX = 1;
+		speedX = 3;
 		visible = true;
+		
+		r = new Rectangle(0, 0, 0, 0);
 	}
 	
 
@@ -19,6 +26,29 @@ public class Projectile {
 		x += speedX;
 		if (x > 800) {
 		   visible = false;
+		   //r=null;
+		}
+		
+		r.setBounds(x, y, 10, 5);
+		
+		if(x <= 800){
+			checkCollision();
+		}
+	}
+	
+	public void checkCollision() {
+		if(r.intersects(StartingGame.isipship.rect)){
+			visible = false;
+			StartingGame.score += 1;
+			
+			if (StartingGame.isipship.health > 0) {
+				StartingGame.isipship.health -= 1;
+			}
+			if (StartingGame.isipship.health == 0) {
+				//StartingGame.isipship.die();
+				StartingGame.isipship.setCenterX(-100);
+				StartingGame.score += 5;
+			}
 		}
 	}
 

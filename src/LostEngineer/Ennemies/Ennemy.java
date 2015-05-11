@@ -1,16 +1,27 @@
 package LostEngineer.Ennemies;
 
+import java.awt.Rectangle;
+
+import LostEngineer.EcamShip.Spaceship;
+import LostEngineer.Start.StartingGame;
+
 public class Ennemy {
 	
-	private int maxHealth;
-	private int currentHealth; 
+	public int health;
 	private int power;
 	private int speedX = -1;
 	private int centerX; 
 	private int centerY;
 	
+	//71-45
+	public static Rectangle rect = new Rectangle(0, 0, 0, 0);
+	
 	public void update() {
+		rect.setRect(centerX+3, centerY, 68, 45);
 		centerX += speedX;
+		if (rect.intersects(Spaceship.rect)){
+			checkCollision();
+		}
 	}
 
 	public void die() {
@@ -20,22 +31,12 @@ public class Ennemy {
 	public void attack() {
 		
 	}
-
-	public int getMaxHealth() {
-		return maxHealth;
-	}
-
-	public void setMaxHealth(int maxHealth) {
-		this.maxHealth = maxHealth;
-	}
-
-	public int getCurrentHealth() {
-		return currentHealth;
-	}
-
-	public void setCurrentHealth(int currentHealth) {
-		this.currentHealth = currentHealth;
-	}
+	
+	public void checkCollision(){
+    	if (rect.intersects(Spaceship.rect)){
+    		System.out.println("Collision Ennemy!");
+    	}
+    }
 
 	public int getPower() {
 		return power;
@@ -67,6 +68,14 @@ public class Ennemy {
 
 	public void setCenterY(int centerY) {
 		this.centerY = centerY;
+	}
+	
+	public int getHealth() {
+		return centerY;
+	}
+
+	public void setHealth(int healthpoints) {
+		this.health = healthpoints;
 	}
 
 }
