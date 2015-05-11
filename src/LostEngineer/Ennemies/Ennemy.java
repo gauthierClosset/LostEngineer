@@ -12,13 +12,16 @@ public class Ennemy {
 	private int speedX = -1;
 	private int centerX; 
 	private int centerY;
+	private int movementSpeed;
 	
 	//71-45
 	public static Rectangle rect = new Rectangle(0, 0, 0, 0);
 	
 	public void update() {
+		follow();
 		rect.setRect(centerX+3, centerY, 68, 45);
 		centerX += speedX;
+		centerY += movementSpeed;
 		if (rect.intersects(Spaceship.rect)){
 			checkCollision();
 		}
@@ -37,6 +40,16 @@ public class Ennemy {
     		System.out.println("Collision Ennemy!");
     	}
     }
+	
+	public void follow() {
+		if (Spaceship.getCenterY() > centerY) {
+			movementSpeed = 1;
+		} else if (Spaceship.getCenterY() < centerY){
+			movementSpeed = -1;
+		} else {
+			movementSpeed = 0;
+		}
+	}
 
 	public int getPower() {
 		return power;
@@ -77,5 +90,4 @@ public class Ennemy {
 	public void setHealth(int healthpoints) {
 		this.health = healthpoints;
 	}
-
 }

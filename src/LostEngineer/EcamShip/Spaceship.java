@@ -11,7 +11,7 @@ public class Spaceship {
 
 		// x, y : Coordinates of the spaceship's center.
 		private int centerX = 50;
-		private int centerY = 240;
+		private static int centerY = 240;
 		
 		// speedX, speedY : Rate at which x and y positions change.
 		private int speedX = 0;
@@ -106,7 +106,7 @@ public class Spaceship {
 			this.centerX = centerX;
 		}
 
-		public int getCenterY() {
+		public static int getCenterY() {
 			return centerY;
 		}
 
