@@ -3,8 +3,12 @@ package LostEngineer.EcamShip;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
-import LostEngineer.Ennemies.Ennemy;
+import LostEngineer.Ennemies.Ennemies;
+import LostEngineer.Start.StartingGame;
+import LostEngineer.Start.StartingGame.GameState;
 import LostEngineer.Weapons.Projectile;
 
 public class Spaceship {
@@ -23,9 +27,7 @@ public class Spaceship {
 		private int gameScreenWidth = 0;
 		
 		// projectiles : Array of 
-		private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
-		
-		private boolean readyToFire = true;
+		private static ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 		
 		public static Rectangle rect = new Rectangle(0, 0, 0, 0);
 		
@@ -54,10 +56,6 @@ public class Spaceship {
 			
 			// 76 - 54
 			rect.setRect(centerX-38, centerY-27, 70, 50);
-			
-			if (rect.intersects(Ennemy.rect)){
-				checkCollision();
-			}
 		}
 
 		public void moveRight() {
@@ -82,19 +80,11 @@ public class Spaceship {
 		}
 		
 		public void shoot() {
-			if (readyToFire) {
 				Projectile p = new Projectile(centerX + 10, centerY - 10);
 				projectiles.add(p);
-			}
 		}
 		
-		public void checkCollision(){
-	    	if (rect.intersects(Ennemy.rect)){
-	    		System.out.println("Collision Spaceship!!");
-	    	}
-	    }
-		
-		public ArrayList getProjectiles() {
+		public static ArrayList getProjectiles() {
 			return projectiles;
 		}
 
@@ -128,21 +118,5 @@ public class Spaceship {
 
 		public void setSpeedY(int speedY) {
 			this.speedY = speedY;
-		}
-
-		public boolean isJumped() {
-			return jumped;
-		}
-
-		public void setJumped(boolean jumped) {
-			this.jumped = jumped;
-		}
-		
-		public boolean isReadyToFire() {
-			return readyToFire;
-		}
-
-		public void setReadyToFire(boolean readyToFire) {
-			this.readyToFire = readyToFire;
 		}
 }

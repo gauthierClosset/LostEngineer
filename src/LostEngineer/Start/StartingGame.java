@@ -13,17 +13,22 @@ import java.awt.Graphics;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.imageio.ImageIO;
 
 import LostEngineer.EcamShip.Spaceship;
+import LostEngineer.Ennemies.Ennemies;
 import LostEngineer.Ennemies.IsipEngineer;
 import LostEngineer.Weapons.Projectile;
 
 public class StartingGame extends Applet implements Runnable, KeyListener {
 	
 	private static Spaceship spaceship;
-	public static IsipEngineer isipship;
+	private static Ennemies ennemies;
+	//public static IsipEngineer isipship;
 	private Graphics second;
 	private URL spaceshipUrl, isipshipUrl;
 	private Dimension windowSize;
@@ -34,7 +39,7 @@ public class StartingGame extends Applet implements Runnable, KeyListener {
 	public static int score = 0;
 	private Font font = new Font(null, Font.BOLD, 30);
 	
-	enum GameState {
+	public enum GameState {
 		Running, Dead
 	}
 	
@@ -63,10 +68,26 @@ public class StartingGame extends Applet implements Runnable, KeyListener {
 	@Override
 	public void start() {
 		spaceship = new Spaceship();
-		isipship = new IsipEngineer(840, 240);
-		//getSpaceship();
+		ennemies = new Ennemies();
+		
 		Thread thread = new Thread(this);
         thread.start(); 
+        
+        Timer tEnnemy = new Timer();
+		tEnnemy.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				ennemies.createIsipship();
+			}	
+		}, 1000, 1000);
+        
+        Timer t = new Timer();
+		t.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				spaceship.shoot();	
+			}	
+		}, 1000, 400);
 	}
 	
 	@Override
@@ -89,14 +110,26 @@ public class StartingGame extends Applet implements Runnable, KeyListener {
 				ArrayList projectiles = spaceship.getProjectiles();
 				for (int i = 0; i < projectiles.size(); i++) {
 					Projectile p = (Projectile) projectiles.get(i);
-					if (p.isVisible() == true) {
+					if (p.isVisible() == true && projectiles.size() != 0) {
 						p.update();
-					} else {
-						projectiles.remove(i);
+					} else if(p.isVisible() == false && projectiles.size() != 0) {
+						//projectiles.remove(i);
+						
 					}
 				}
 				
-				isipship.update();
+				ArrayList isipships = ennemies.getIsipShips();
+				for (int i = 0; i < isipships.size(); i++) {
+					IsipEngineer isipship = (IsipEngineer) isipships.get(i);
+					if (isipship.isVisible() == true) {
+						isipship.update(i);
+					} else {
+						isipship.setCenterX(-100);
+						isipships.remove(i);
+					}
+				}
+				
+				//isipship.update();
 				repaint();
 	        	
 				try {
@@ -108,6 +141,7 @@ public class StartingGame extends Applet implements Runnable, KeyListener {
 	        	if(Spaceship.health == 0) {
 	        		state = GameState.Dead;
 	        	}
+	        	
 	    	}
 		}
 	}
@@ -148,16 +182,30 @@ public class StartingGame extends Applet implements Runnable, KeyListener {
 				g.setColor(Color.YELLOW);
 				g.fillRect(p.getX(), p.getY(), 10, 5);
 			}
-		
+			
+			ArrayList isispships = Ennemies.getIsipShips();
+			for (int i = 0; i < isispships.size(); i++) {
+				IsipEngineer isipship = (IsipEngineer) isispships.get(i);
+				g.drawImage(isipShipImg, isipship.getCenterX(), isipship.getCenterY(), this);
+				g.setColor(Color.WHITE);
+				g.drawRect((int)isipship.getCenterX(),(int)isipship.getCenterY(),(int)isipship.r.getWidth(),(int)isipship.r.getHeight());
+			}
+			
+			/*ArrayList rects = Ennemies.getRectangles();
+			for (int i = 0; i < rects.size(); i++) {
+				Rectangle rect = (Rectangle) rects.get(i);
+				g.setColor(Color.WHITE);	
+				g.drawRect((int)rect.getX(), (int)rect.getY(), (int)rect.getWidth(), (int)rect.getHeight());
+			}*/
+					
 			g.drawImage(spaceshipImg, spaceship.getCenterX() - spaceshipImgWidth/2, spaceship.getCenterY() - spaceshipImgHeight/2, this);		
-			g.drawImage(isipShipImg, isipship.getCenterX(), isipship.getCenterY(), this);	
 			g.setColor(Color.WHITE);
-			g.drawRect((int)spaceship.rect.getX(), (int)spaceship.rect.getY(), (int)spaceship.rect.getWidth(), (int)spaceship.rect.getHeight());
-			g.drawRect((int)isipship.rect.getX(), (int)isipship.rect.getY(), (int)isipship.rect.getWidth(), (int)isipship.rect.getHeight());	
+			g.drawRect((int)spaceship.rect.getX(), (int)spaceship.rect.getY(), (int)spaceship.rect.getWidth(), (int)spaceship.rect.getHeight());	
 			g.setFont(font);
 			g.setColor(Color.WHITE);
-			g.drawString("Score : " + Integer.toString(score), 650, 30);	
-		
+			g.drawString("Score : " + Integer.toString(score), 650, 30);
+			
+			
 		} else if (state == GameState.Dead) {
 			g.setColor(Color.BLACK);
 			g.fillRect(0, 0, 800, 480);
@@ -186,8 +234,6 @@ public class StartingGame extends Applet implements Runnable, KeyListener {
 	   		break;
 
 	   	case KeyEvent.VK_SPACE:
-	   		spaceship.shoot();
-	   		spaceship.setReadyToFire(false);
 	   		break;
 	   }
 	}
@@ -212,7 +258,6 @@ public class StartingGame extends Applet implements Runnable, KeyListener {
             break;
 
         case KeyEvent.VK_SPACE:
-        	spaceship.setReadyToFire(true);
             break;
 
         }

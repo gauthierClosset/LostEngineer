@@ -2,15 +2,14 @@ package LostEngineer.Weapons;
 
 import java.awt.Rectangle;
 
+import LostEngineer.Ennemies.Ennemies;
 import LostEngineer.Start.StartingGame;
-
-
 
 public class Projectile {
 	
 	private int x, y, speedX;
-	private boolean visible;
-	private Rectangle r;
+	private static boolean visible;
+	public static Rectangle r;
 	
 	public Projectile(int startX, int startY) {
 		x = startX;
@@ -26,32 +25,10 @@ public class Projectile {
 		x += speedX;
 		if (x > 800) {
 		   visible = false;
-		   //r=null;
 		}
 		
 		r.setBounds(x, y, 10, 5);
-		
-		if(x <= 800){
-			checkCollision();
-		}
 	}
-	
-	public void checkCollision() {
-		if(r.intersects(StartingGame.isipship.rect)){
-			visible = false;
-			StartingGame.score += 1;
-			
-			if (StartingGame.isipship.health > 0) {
-				StartingGame.isipship.health -= 1;
-			}
-			if (StartingGame.isipship.health == 0) {
-				//StartingGame.isipship.die();
-				StartingGame.isipship.setCenterX(-100);
-				StartingGame.score += 5;
-			}
-		}
-	}
-
 
 	public int getX() {
 		return x;
@@ -88,7 +65,7 @@ public class Projectile {
 	}
 
 
-	public void setVisible(boolean visible) {
-		this.visible = visible;
+	public static void setVisible(boolean bVisible) {
+		visible = bVisible;
 	}
 }
